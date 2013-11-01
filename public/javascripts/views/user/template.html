@@ -18,17 +18,22 @@
     </p>
 
     <p>
+        <small>Documento *</small>
+      <input type="text" id="pid" placeholder="D.N.I (Sin puntos ni espacios)" value="{{ pid }}" >
+    </p>
+
+    <p>
         <small>Email *</small>
         <input type="email" name="text-basic" id="email" placeholder="juan@perez.com" value="{{ email }}" >
     </p>
 
     <p>
-        <small>Teléfono</small>
-        <input type="tel" name="text-basic" id="phone" placeholder="(011) 99999999" value="{{ phone }}" >
+        <small>Celular (El celular será usado para enviar recordatorios. Recuerde no colocar ni 0 ni 15)</small>
+        <input type="tel" name="text-basic" id="phone" placeholder="3519999999" value="{{ phone }}" maxlength="10" >
     </p>
 
     <p>
-        <small>WhatsApp</small>
+        <small>WhatsApp (Si habilita esta opción se reemplazará el SMS por este medio)</small>
         <label>
           <input type="checkbox" id="whatsapp" {% if whatsapp %}checked{% endif %}> Usar medio
         </label>

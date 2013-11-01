@@ -16,6 +16,7 @@ CACHE:
 /stylesheets/images/icons-18-white.png
 /stylesheets/images/icons-36-black.png
 /stylesheets/images/icons-36-white.png
+/images/menu.svg
 
 NETWORK:
 /api

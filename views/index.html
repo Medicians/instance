@@ -19,9 +19,32 @@ data-mode="development"
 
   </div><!-- /content -->
 
-  <div id="modal"></div>
-
 </div><!-- /page -->
+
+<!-- Dialogs and toasts sections -->
+<div id="dialogs" style="display: none;">
+
+<div data-role="popup" id="dialogPopup" data-dismissible="false" data-theme="none" class="app-card-dialog ui-corner-all ui-shadow" data-position-to="window" data-transition="pop">
+	<div class="app-card-container">
+    <span class="title">Dialogo</span>
+    <p>
+    	<small class="text">This action cannot be undone.</small>
+    </p>
+  </div>
+  <fieldset class="ui-grid-a">
+    <div class="ui-block-a"><a href="javascript:;" data-role="none" class="no_dialog app-button">No</a></div>
+    <div class="ui-block-b"><a href="javascript:;" data-role="none" class="yes_dialog app-button">Si</a></div>
+  </fieldset>
+</div>
+
+<div data-role="popup" id="toastPopup" data-theme="none" class="app-card-dialog ui-corner-all ui-shadow" data-position-to="window" data-transition="pop">
+	<p class="popup_text">I am positioned to the window.</p>
+</div>
+
+</div>
+
+<!-- End of D & T sections -->
+
 {% endblock %}
 
 {% block app_script %}

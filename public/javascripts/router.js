@@ -2,6 +2,7 @@ define([
   'jquery',
   'underscore',
   'backbone',
+  'helper/dialogs',
   'views/home/View',
   'views/appointment/View',
   'views/appointments/View',
@@ -13,7 +14,7 @@ define([
   'views/config/View',
   'views/login/View',
   'views/sidebar/View',
-  'jquery_depend'], function($, _, Backbone, HomeView, AppointmentView, AppointmentsView, UserView, UsersView, StoryView, StoriesView, UserStoriesView, ConfigView, LoginView, SidebarView) {
+  'jquery_depend'], function($, _, Backbone, Dialogs, HomeView, AppointmentView, AppointmentsView, UserView, UsersView, StoryView, StoriesView, UserStoriesView, ConfigView, LoginView, SidebarView) {
 
   var AppRouter = Backbone.Router.extend({
     routes: {
@@ -46,6 +47,8 @@ define([
   });
 
   var initialize = function() {
+
+    Dialogs.init();
 
     var app_router = new AppRouter;
 

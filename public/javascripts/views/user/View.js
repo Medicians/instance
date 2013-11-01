@@ -19,6 +19,7 @@ define([
       var data = {
         firstname: '',
         lastname: '',
+        pid: '',
         id: '',
         type: '',
         email: '',
@@ -41,9 +42,12 @@ define([
           _id: this.options.uid
         });
 
+        console.info(user.get('whatsapp'));
+
         data = {
           firstname: user.get('firstname'),
           lastname: user.get('lastname'),
+          pid: user.get('pid'),
           id: user.get('_id'),
           type: user.get('type'),
           email: user.get('email'),
@@ -78,7 +82,7 @@ define([
       $("#save_user").on('click, tap', function(e) {
         e.stopPropagation();
 
-        if (_.isEmpty($("#firstname").val()) || _.isEmpty($("#lastname").val()) || _.isEmpty($("#email").val())) {
+        if (_.isEmpty($("#firstname").val()) || _.isEmpty($("#lastname").val()) || _.isEmpty($("#email").val()) || _.isEmpty($("#pid").val())) {
           dialogs.toast("Debe completar todos los campos.");
 
           return;
@@ -87,16 +91,15 @@ define([
         var nu = {};
         nu.firstname = $("#firstname").val();
         nu.lastname = $("#lastname").val();
+        nu.pid = $("#pid").val();
         nu.email = $("#email").val();
         nu.phone = $("#phone").val();
-        nu.whatsapp = ($("#whatsapp").val() == 'on');
+        nu.whatsapp = ($("#whatsapp").is(":checked"));
         nu.address = $("#address").val();
         nu.type = $("#type").val();
         if (!self.isNew) {
           nu._id = $("#_id").val();
         }
-
-        console.info(nu);
 
         var ms = new model(nu);
         ms.save({}, {

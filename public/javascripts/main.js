@@ -78,13 +78,10 @@ require.config({
 
 require(['app', 'underscore', 'stringjs', 'pubsub', 'jquery', 'jquery_mobile', 'jquery_depend'], function(App, _, S, PubSub, $) {
 
-  // Prevents all anchor click handling
-  $.mobile.linkBindingEnabled = false;
-
-  // Disabling this will prevent jQuery Mobile from handling hash changes
-  $.mobile.hashListeningEnabled = false;
-
   $.mobile.ajaxEnabled = false;
+  $.mobile.linkBindingEnabled = false;
+  $.mobile.hashListeningEnabled = false;
+  $.mobile.pushStateEnabled = false;
 
   S.extendPrototype();
 

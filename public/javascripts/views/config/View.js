@@ -44,6 +44,7 @@ define([
 
         self.data.set('email', $("#email").val());
         self.data.set('title', $("#title").val());
+        self.data.set('phone', $("#phone").val());
 
         self.data.save({}, {
           success: function() {

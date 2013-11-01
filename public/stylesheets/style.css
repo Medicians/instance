@@ -1344,6 +1344,48 @@ div.jqi .jqisubstate .jqibuttons button {
   box-sizing: border-box;
   margin-bottom: 15px;
 }
+.app-card-dialog {
+  font-family: Helvetica, Arial, sans-serif;
+  background-color: white;
+  overflow: hidden;
+  box-sizing: border-box;
+  margin-bottom: 15px;
+  box-shadow: 0 0 15px black;
+  max-width: 400px;
+  min-width: 300px;
+}
+.app-card-dialog .title {
+  margin: 0;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-align: center;
+  padding-top: 3px;
+  padding-bottom: 10px;
+  text-decoration: none;
+  color: #666666;
+  font-family: 'roboto';
+  font-size: 18px;
+}
+.app-card-dialog .popup_text {
+  margin: 0;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-decoration: none;
+  color: #666666;
+  font-family: 'roboto';
+  font-size: 18px;
+}
+.app-card-dialog fieldset {
+  padding: 0;
+  margin: 0;
+}
 .app-card-container {
   padding-left: 16px;
   padding-right: 16px;
@@ -1414,10 +1456,33 @@ div.jqi .jqisubstate .jqibuttons button {
   padding: 4px;
   cursor: default;
 }
+#appointment {
+  text-align: center;
+}
+#appointment img {
+  margin-bottom: 10px;
+}
+#appointment .ui-grid-solo {
+  padding: 0;
+  border: 0;
+  margin: 0;
+}
+#appointment p {
+  font-family: 'roboto';
+  text-align: center;
+}
 @media (min-width: 700px) {
+  #appointment {
+    width: 40%;
+    margin: 0 auto;
+  }
   #app-container {
     width: 70%;
     margin: 0 auto 0 auto;
+  }
+  #login_form {
+    width: 40%;
+    margin: 0 auto;
   }
 }
 @media (min-width: 35em) {
@@ -1442,6 +1507,10 @@ div.jqi .jqisubstate .jqibuttons button {
   .ui-responsive-panel .ui-panel-dismiss-display-push {
     display: none;
   }
+}
+.ui-grid-a > :nth-child(n) {
+  width: 50%;
+  margin-right: 0;
 }
 @media print {
   #panel {

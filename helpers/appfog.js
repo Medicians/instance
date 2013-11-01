@@ -13,7 +13,7 @@ exports.generate_mongo_url = function() {
             "username": "",
             "password": "",
             "name": "",
-            "db": "appians_medical"
+            "db": "appians_medical" // Se debe componer con el id de instancia
         }
     }
 

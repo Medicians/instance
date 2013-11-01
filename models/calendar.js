@@ -1,7 +1,7 @@
 var mongoose = require('mongoose'),
     Types = mongoose.Schema.Types,
     moment = require('moment'),
-    Mailgun = require('mailgun').Mailgun;
+    notifications = require('../helpers/notifications');
 
 moment.lang('es');
 
@@ -26,31 +26,41 @@ schema.pre('save', function(next) {
 });
 
 schema.post('save', function (doc) {
-	var mg = new Mailgun(app.get('mailgun_key'));
-
-	mongoose.model('Config').find({}, function(err, configs) {
-		mongoose.model('User').findById(doc.user, function(err, user) {
-			mongoose.model('User').findById(doc.owner, function(err, adminUser) {
-				var text = "Estimado " + doc.user_name + '\n\n';
+	mongoose.model('User').findById(doc.user, function(err, user) {
+		mongoose.model('User').findById(doc.owner, function(err, adminUser) {
+			var text = '';
 			
-				if( doc.updated != undefined ) {
-					text += "Su turno ha sido actualizado: \n";
-					text += "Médico: " + adminUser.firstname + ' ' + adminUser.lastname + '\n';
-					text += "Turno anterior: " + moment( doc.updated ).format('LLL');
-					text += "\nNuevo turno: " + moment( doc.startTime ).format('LLL');
-				} else {
-					text += "Su turno: \n";
-					text += "Médico: " + adminUser.firstname + ' ' + adminUser.lastname + '\n';
-					text += "Fecha y Hora: " + moment( doc.startTime ).format('LLL');
-				}
+			var title = 'Nuevo turno';
+			if( doc.updated != undefined ) {
+				title = 'Cambio de Turno';
 
-				text += '\n\nConfirme su turno haciendo click en el siguiente enlace: \n';
-				text += app.get('server_url') + '/appointment/confirm/' + doc._id;
+				text += "Su turno ha sido actualizado: <br/>";
+				text += "Médico: " + adminUser.firstname + ' ' + adminUser.lastname + '<br/>';
+				text += "Turno anterior: " + moment( doc.updated ).format('LLL');
+				text += "<br/>Nuevo turno: " + moment( doc.startTime ).format('LLL');
+			} else {
+				text += "Su turno: <br/>";
+				text += "Médico: " + adminUser.firstname + ' ' + adminUser.lastname + '<br/>';
+				text += "Fecha y Hora: " + moment( doc.startTime ).format('LLL');
+			}
 
-				text += "\n\n" + configs[0].title;
+			text += '<br/><br/><p class="callout">Confirme su turno haciendo click en el siguiente enlace: <br/><a href="';
+			text += app.get('server_url') + '/appointment/confirm/' + doc._id + '">Confirmar Turno</a></p>';
 
-				mg.sendText(configs[0].email, user.email, 'Confirmación Turno', text);
-			});
+			notifications.send_ics_email(
+				user.email, 
+				'Confirmación Turno', 
+				doc.startTime, 
+				doc.endTime, 
+				'Turno con ' + adminUser.firstname + ' ' + adminUser.lastname, 
+				title, 
+				doc.user_name,
+				text);
+
+			/*if( user.whatsapp ) {
+				console.info("Trying whatsapp...");
+				waa.send_message(user.phone, text);
+			}*/
 		});
 	});
 

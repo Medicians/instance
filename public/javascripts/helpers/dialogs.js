@@ -1,48 +1,50 @@
-define(['text!./simple_dialog_template.html', 'text!./ask_dialog_template.html', 'ashe', 'backbone', 'backbone_modal', 'underscore'], function(SimpleTemplate, AskTemplate, Ashe, Backbone, _) {
+define(['jquery', 'jquery_mobile'], function($) {
 
 	return {
+		init: function() {
+			$("#dialogs").trigger('create');
+			$("#dialogs").show();
+		},
+
 		message: function(title, message) {
-			var Modal = Backbone.Modal.extend({
-				template: Ashe.parse(SimpleTemplate, {
-					title: title,
-					text: message
-				}),
-				cancelEl: '.bbm-button'
-			});
+			$("#toastPopup .popup_text").text(message);
+			$("#toastPopup").popup('open');
 
-			var modalView = new Modal();
-        	$('#app-container').append(modalView.render().el);
-
+			setTimeout(function() {
+				$("#toastPopup").popup('close');
+			}, 3000);
 		},
 
 		toast: function(message) {
-			this.message('Medicians', message);
+			$("#toastPopup .popup_text").text(message);
+			$("#toastPopup").popup('open');
+
+			setTimeout(function() {
+				$("#toastPopup").popup('close');
+			}, 3000);
 		},
 
 		ask: function(title, message, callback) {
-			var Modal = Backbone.Modal.extend({
-				template: Ashe.parse(AskTemplate, {
-					title: title,
-					text: message
-				}),
+			$("#dialogPopup .title").text(title);
+			$("#dialogPopup .text").text(message);
 
-				cancelEl: '.no',
-				submitEl: '.yes',
-				
-				events: {
-          			'click .yes': function(e) {
-          				e.preventDefault();
-          				callback(e, true);
-          			},
-          			/*'click .no': function(e) {
-          				e.preventDefault();
-          				callback(e, false);
-          			},*/
-        		},
+			$("#dialogPopup").popup('open');
+
+			$("#dialogPopup .no_dialog").on('tap', function(e) {
+				$("#dialogPopup").popup('close');				
+
+				callback(e, false);
+
+				return false;
 			});
 
-			var modalView = new Modal();
-        	$('#app-container').append(modalView.render().el);
+			$("#dialogPopup .yes_dialog").on('tap', function(e) {
+				$("#dialogPopup").popup('close');				
+
+				callback(e, true);
+
+				return false;
+			});
 		}
 	};
 

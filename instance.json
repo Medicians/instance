@@ -1,0 +1,11 @@
+{
+	"firstname" : "Demo",
+	"lastname" : "Médico",
+	"email" : "info@speryans.com",
+	"password" : "123456",
+	"pid" : "99999999",
+	"type" : "admin",
+	"username" : "demo",
+	"port" : "3010",
+	"env" : "production"
+}

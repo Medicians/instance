@@ -1,8 +1,0 @@
-{
-	"firstname" : "Román",
-	"lastname" : "Sarria",
-	"email" : "rsarria@speryans.com",
-	"password" : "master",
-	"type" : "admin",
-	"server_url" : "http://medicians.ap01.aws.af.cm"
-}

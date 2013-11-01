@@ -13,11 +13,15 @@ var express = require('express'),
   fs = require('fs'),
   requirejs = require('requirejs'),
   appfog = require('./helpers/appfog'),
-  cron = require('./helpers/cron');
+  cron = require('./helpers/cron'),
+  notifications = require('./helpers/notifications');
 
 var app = express();
 
-app.set('env', process.env.ENV || 'development'); //production
+var instanceData = JSON.parse(fs.readFileSync(path.join(__dirname, 'instance.json'), 'utf8'));
+
+app.set('env', instanceData.env || 'development'); //production
+app.set('nserver', ( app.get('env') == 'development' ? 'http://localhost:7001' : 'http://localhost:3001' ));
 
 if ((app.get('env') != 'development')) {
   // Minify important resources
@@ -46,17 +50,15 @@ if ((app.get('env') != 'development')) {
   console.info("Generated new AppCache");
 }
 
-var MongoStore = require('connect-mongo')(express);
-
-GLOBAL.salt = 'appians_medical_123454321';
+GLOBAL.salt = (app.get('env') == 'development') ? 'appians_medical_123454321' : 'appians_medical_' + instanceData.username;
 
 // Template engine
 app.engine('html', swig.renderFile);
 
 // all environments
-app.set('port', process.env.VMC_APP_PORT || ((app.get('env') == 'development') ? 6001 : 4000));
-//app.set('mongo', process.env.MONGO_URL || 'mongodb://localhost/appians_medical');
-app.set('mongo', appfog.generate_mongo_url());
+app.set('port', ((app.get('env') == 'development') ? 6001 : instanceData.port ));
+
+app.set('mongo', 'mongodb://localhost/appians_medical_' + instanceData.username );
 app.set('mailgun_key', 'key-8zq2jnqk5eetkyzqel1qdpwvb51um9a6');
 app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
@@ -65,12 +67,7 @@ app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser(salt));
-app.use(express.session({
-  store: new MongoStore({
-    url: app.get('mongo'),
-    collection: 'medical_sessions'
-  })
-}));
+app.use(express.session());
 app.use(app.router);
 app.use(require('less-middleware')({
   src: __dirname + '/public'
@@ -95,12 +92,11 @@ mongoose.connect(app.get('mongo'));
 var models = require('./models');
 
 // Put initial data from configuration file for instance
-var adminUser = JSON.parse(fs.readFileSync(path.join(__dirname, 'user.json'), 'utf8'));
 mongoose.model('User').find({
-  email: adminUser.email
+  email: instanceData.email
 }, function(err, docs) {
   if (docs.length == 0) {
-    var user = new(mongoose.model('User'))(adminUser);
+    var user = new(mongoose.model('User'))(instanceData);
     user.save(function(err) {
       if (err) {
         console.error(err);
@@ -112,12 +108,12 @@ mongoose.model('User').find({
 });
 
 mongoose.model('Config').find({
-  email: adminUser.email
+  email: instanceData.email
 }, function(err, docs) {
   if (docs.length == 0) {
     var config = new(mongoose.model('Config'))({
-      title: adminUser.firstname + ' ' + adminUser.lastname,
-      email: adminUser.email
+      title: instanceData.firstname + ' ' + instanceData.lastname,
+      email: instanceData.email
     });
     config.save(function(err) {
       if (err) {
@@ -126,10 +122,13 @@ mongoose.model('Config').find({
 
       console.info("Config created.");
     });
+  } else {
+    app.set('config_data', docs[0]);
   }
 });
 
-app.set('server_url', adminUser.server_url);
+app.set('username', instanceData.username)
+app.set('server_url', 'http://' + instanceData.username + '.medicians.org');
 
 /*
  * API
@@ -164,24 +163,15 @@ baucis.rest('User');
 var calendarController = baucis.rest('Calendar');
 
 calendarController.request('del', function(request, response, next) {
-  var moment = require('moment'),
-    Mailgun = require('mailgun').Mailgun;
-
-  var mg = new Mailgun(app.get('mailgun_key'));
+  var moment = require('moment');
 
   mongoose.model('Calendar').findById(request.params.id).populate('user').exec(function(err, cevent) {
-    mongoose.model('Config').find({}, function(err, configs) {
-      var text = "Estimado " + cevent.user_name + '\n\n';
+    var text = "Su turno ha sido cancelado: <br/>";
+    text += "Turno cancelado: " + moment(cevent.startTime).format('LLL');
 
-      text += "Su turno ha sido cancelado: \n";
-      text += "Turno cancelado: " + moment(cevent.startTime).format('LLL');
+    notifications.send_email(cevent.user.email, 'Cancelación de Turno', 'Turno cancelado', cevent.user_name, text);
 
-      text += "\n\n" + configs[0].title;
-
-      mg.sendText(configs[0].email, cevent.user.email, 'Cancelación de Turno', text);
-
-      next();
-    });
+    next();
   });
 });
 

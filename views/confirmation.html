@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Medicians: Cita</title>
+
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, 
+            initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, 
+            user-scalable=no">
+
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body class="ui-mobile-viewport ui-overlay-c">
+    <div id="appointment" class="ui-content">
+        <img src="/images/logo_email.png" />
+
+        <div class="app-card ui-corner-all ui-shadow">
+            <div class="app-card-container">
+                <p>
+                    Su evento ha sido confirmado
+                </p>
+            </div>
+            <fieldset class="ui-grid-solo">
+                <div class="ui-block-a"><a href="{{ data_uri }}" id="do_login" data-role="none" class="app-button">Descargar Evento</a></div>
+            </fieldset>
+        </div>
+
+    </div>
+</body>
+</html>
